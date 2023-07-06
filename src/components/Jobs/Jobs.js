@@ -56,10 +56,10 @@ class Jobs extends Component {
     jobs: '',
     profileFail: itemStatus.inProgress,
     jobsFail: itemStatus.inProgress,
-    employmentFilter: '',
+    employmentFilter: [],
+    employmentFilterString: '',
     salaryOption: '',
     searchInput: '',
-    jobsFilteredApi: '',
   }
 
   componentDidMount() {
@@ -67,6 +67,44 @@ class Jobs extends Component {
   }
 
   getDetails = async () => {
+    this.getProfileDetails()
+    this.getJobsDetails()
+  }
+
+  getProfileDetails = async () => {
+    const {history} = this.props
+    const token = Cookies.get('jwt_token')
+    if (token === undefined) {
+      history.replace('/')
+    } else {
+      const options = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        method: 'GET',
+      }
+      const profileApi = 'https://apis.ccbp.in/profile'
+      const profileResponse = await fetch(profileApi, options)
+      const profileData = await profileResponse.json()
+
+      if (profileResponse.ok) {
+        const formattedProfileData = {
+          name: profileData.profile_details.name,
+          profileImageUrl: profileData.profile_details.profile_image_url,
+          shortBio: profileData.profile_details.short_bio,
+        }
+        //   console.log(formattedProfileData)
+        this.setState({
+          profileDetails: formattedProfileData,
+          profileFail: itemStatus.success,
+        })
+      } else {
+        this.setState({profileFail: itemStatus.failed})
+      }
+    }
+  }
+
+  getJobsDetails = async () => {
     const {history} = this.props
     const token = Cookies.get('jwt_token')
     // console.log(token)
@@ -80,63 +118,33 @@ class Jobs extends Component {
         },
         method: 'GET',
       }
-      this.getProfileDetails(options)
-      this.getJobsDetails(options)
-    }
-  }
+      const {employmentFilterString, searchInput, salaryOption} = this.state
 
-  getProfileDetails = async options => {
-    const profileApi = 'https://apis.ccbp.in/profile'
-    const profileResponse = await fetch(profileApi, options)
-    const profileData = await profileResponse.json()
-    if (profileData !== undefined) {
-      const formattedProfileData = {
-        name: profileData.profile_details.name,
-        profileImageUrl: profileData.profile_details.profile_image_url,
-        shortBio: profileData.profile_details.short_bio,
+      const jobsApi = `https://apis.ccbp.in/jobs?employment_type=${employmentFilterString}&minimum_package=${salaryOption}&search=${searchInput}`
+
+      const jobsResponse = await fetch(jobsApi, options)
+      const jobsData = await jobsResponse.json()
+      if (jobsResponse.ok) {
+        if (jobsData.total !== 0) {
+          const formattedJobsData = jobsData.jobs.map(eachJob => ({
+            id: eachJob.id,
+            companyLogoUrl: eachJob.company_logo_url,
+            employmentType: eachJob.employment_type,
+            jobDescription: eachJob.job_description,
+            location: eachJob.location,
+            packagePerAnnum: eachJob.package_per_annum,
+            rating: eachJob.rating,
+            title: eachJob.title,
+          }))
+          //   console.log(formattedJobsData)
+          this.setState({jobs: formattedJobsData, jobsFail: itemStatus.success})
+        } else {
+          this.setState({jobsFail: itemStatus.notFound})
+          //   console.log('job list fail')
+        }
+      } else {
+        this.setState({jobsFail: itemStatus.failed})
       }
-      //   console.log(formattedProfileData)
-      this.setState({
-        profileDetails: formattedProfileData,
-        profileFail: itemStatus.success,
-      })
-    } else {
-      this.setState({profileFail: itemStatus.failed})
-    }
-  }
-
-  getJobsDetails = async options => {
-    const {
-      jobsFilteredApi,
-      employmentFilter,
-      searchInput,
-      salaryOption,
-    } = this.state
-
-    const jobsApi =
-      jobsFilteredApi === ''
-        ? `https://apis.ccbp.in/jobs?employment_type=${employmentFilter}&minimum_package=${salaryOption}&search=${searchInput}`
-        : jobsFilteredApi
-
-    const jobsResponse = await fetch(jobsApi, options)
-    const jobsData = await jobsResponse.json()
-
-    if (jobsData.total !== 0) {
-      const formattedJobsData = jobsData.jobs.map(eachJob => ({
-        id: eachJob.id,
-        companyLogoUrl: eachJob.company_logo_url,
-        employmentType: eachJob.employment_type,
-        jobDescription: eachJob.job_description,
-        location: eachJob.location,
-        packagePerAnnum: eachJob.package_per_annum,
-        rating: eachJob.rating,
-        title: eachJob.title,
-      }))
-      //   console.log(formattedJobsData)
-      this.setState({jobs: formattedJobsData, jobsFail: itemStatus.success})
-    } else {
-      this.setState({jobsFail: itemStatus.notFound})
-      console.log('job list fail')
     }
   }
 
@@ -198,72 +206,67 @@ class Jobs extends Component {
     )
   }
 
-  renderEmploymentList = () => {
-    const onCheckBtn = event => {
-      const {employmentFilter, searchInput, salaryOption} = this.state
-      const filterItem = event.target.value
-      let newFilter
-      let newFilterString
-      let newApi
-      if (employmentFilter.includes(filterItem)) {
-        newFilter = employmentFilter.filter(
-          eachFilter => eachFilter !== filterItem,
-        )
-        newFilterString = newFilter.join(',')
-        newApi = `https://apis.ccbp.in/jobs?employment_type=${newFilterString}&minimum_package=${salaryOption}&search=${searchInput}`
-        this.setState(
-          {
-            employmentFilter: newFilter,
-            jobsFilteredApi: newApi,
-          },
-          this.getDetails,
-        )
-      } else {
-        newFilter = `${filterItem}`
+  renderEmploymentList = () => (
+    <ul className="employment-list">
+      {employmentTypesList.map(eachType => {
+        const {employmentTypeId, label} = eachType
+        const checkedValuesList = []
+        const onCheckBtn = event => {
+          const {employmentFilter} = this.state
+          if (event.target.checked) {
+            checkedValuesList.push(event.target.value)
+            this.setState(
+              prevState => ({
+                employmentFilter: [
+                  ...prevState.employmentFilter,
+                  ...checkedValuesList,
+                ],
+                employmentFilterString: [
+                  ...prevState.employmentFilter,
+                  ...checkedValuesList,
+                ].join(','),
+              }),
+              this.getJobsDetails,
+            )
+          } else {
+            const filteredValuesList = employmentFilter.filter(eachValue =>
+              eachValue === event.target.value ? '' : event.target.value,
+            )
 
-        newApi = `https://apis.ccbp.in/jobs?employment_type=${newFilter}&minimum_package=${salaryOption}&search=${searchInput}`
-        this.setState(
-          prevState => ({
-            employmentFilter: [...prevState.employmentFilter, filterItem],
-            jobsFilteredApi: newApi,
-          }),
-          this.getDetails,
-        )
-      }
-    }
+            /* console.log(filteredValuesList, 'filtered list')
+            console.log(employmentFilter, 'unfiltered list') */
 
-    return (
-      <ul className="employment-list">
-        {employmentTypesList.map(eachType => {
-          const {employmentTypeId, label} = eachType
-          return (
-            <li key={employmentTypeId}>
-              <input
-                id={employmentTypeId}
-                type="checkbox"
-                value={employmentTypeId}
-                onClick={onCheckBtn}
-              />
-              <label className="label" htmlFor={employmentTypeId}>
-                {label}
-              </label>
-            </li>
-          )
-        })}
-      </ul>
-    )
-  }
+            this.setState(
+              {
+                employmentFilter: filteredValuesList,
+                employmentFilterString: filteredValuesList.join(','),
+              },
+              this.getJobsDetails,
+            )
+          }
+        }
+        return (
+          <li key={employmentTypeId}>
+            <input
+              id={employmentTypeId}
+              type="checkbox"
+              value={employmentTypeId}
+              onClick={onCheckBtn}
+            />
+            <label className="label" htmlFor={employmentTypeId}>
+              {label}
+            </label>
+          </li>
+        )
+      })}
+    </ul>
+  )
 
   renderSalaryList = () => {
-    const {salaryOption, searchInput, employmentFilter} = this.state
-
+    const {salaryOption} = this.state
     const onSelectSalary = event => {
       const selectedSalaryOption = event.target.value
-      const newApi = `https://apis.ccbp.in/jobs?employment_type=${employmentFilter}&minimum_package=${selectedSalaryOption}&search=${searchInput}`
-      this.setState(
-        {salaryOption: selectedSalaryOption, jobsFilteredApi: newApi},
-        this.getDetails,
-      )
+      this.setState({salaryOption: selectedSalaryOption}, this.getJobsDetails)
     }
 
     return (
@@ -292,18 +295,15 @@ class Jobs extends Component {
   }
 
   renderSearchContainer = () => {
-    const {employmentFilter, searchInput} = this.state
+    const {searchInput} = this.state
     const onChangeSearchInput = event => {
-      const searchText = event.target.value.toLowerCase()
       this.setState({
-        searchInput: searchText,
+        searchInput: event.target.value.toLowerCase(),
       })
     }
 
     const onClickSearch = () => {
-      const newApi = `https://apis.ccbp.in/jobs?employment_type=${employmentFilter}&minimum_package=1000000&search=${searchInput}`
-
-      this.setState({jobsFilteredApi: newApi}, this.getDetails)
+      this.getJobsDetails()
     }
     return (
       <div className="search-container">

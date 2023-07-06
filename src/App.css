@@ -1,0 +1,317 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.login-bg {
+  background-color: black;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-card {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #272727;
+  padding: 35px;
+  border-radius: 15px;
+  color: white;
+  gap: 15px;
+}
+.form {
+  width: 100%;
+}
+.input-label {
+  display: block;
+  margin-bottom: 8px;
+}
+.input-element {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  margin-bottom: 20px;
+}
+.login-button {
+  width: 100%;
+  background-color: #4f46e5;
+  padding: 8px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+.logout-button {
+  margin-left: auto;
+}
+.error-message {
+  color: red;
+  font-size: 14px;
+}
+.home-bg {
+  background-image: url('https://assets.ccbp.in/frontend/react-js/home-lg-bg.png');
+  height: 86vh;
+  background-size: cover;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.home-text-card {
+  color: white;
+  width: 60%;
+  padding: 20px;
+}
+.home-title {
+  font-size: 50px;
+}
+.home-desc {
+  font-size: 24px;
+}
+.findjobs-button {
+  width: 150px !important;
+  font-weight: bold;
+}
+.notfound-bg {
+  background-color: black;
+  background-image: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #f1f5f9;
+  height: 100vh;
+}
+.notfound-image {
+  width: 50%;
+}
+.notfound-title {
+  font-size: 35px;
+}
+.header-bg {
+  background-color: #272727;
+  padding: 25px 35px 25px 35px;
+  color: #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: auto;
+}
+
+ul {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style-type: none;
+}
+ul li {
+  padding-left: 0;
+}
+.nav-items {
+  width: 65%;
+}
+.link-text {
+  text-decoration: none;
+  color: #f8fafc;
+  font-weight: bold;
+  font-size: 24px;
+  margin: 0 15px 0 15px;
+}
+.jobs-bg {
+  background-color: black;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.side-nav {
+  color: white;
+  padding: 25px;
+  width: 34vw;
+}
+.profile {
+  padding: 15px;
+  background-image: url('https://assets.ccbp.in/frontend/react-js/profile-bg.png');
+  background-size: cover;
+  margin-bottom: 15px;
+  width: 100%;
+}
+.profile-name {
+  font-size: 28px;
+  color: #6366f1;
+}
+.profile-desc {
+  font-size: 14px;
+  color: #2c364c;
+}
+.borders {
+  border-top: 1px solid #b6c5ff;
+  border-bottom: 1px solid #b6c5ff;
+  background-image: none;
+}
+.employment {
+  padding: 15px;
+}
+.employment-title {
+  margin-top: 0;
+  font-size: 26px;
+}
+.employment-list {
+  flex-direction: column;
+  gap: 8px;
+}
+.label {
+  margin-left: 5px;
+}
+.salary {
+  padding: 15px;
+}
+
+.jobs-list-body {
+  padding: 15px;
+  width: 64vw;
+}
+.search-container {
+  height: 40px;
+  width: 50%;
+  border-radius: 5px;
+  border: 1px solid #b6c5ff;
+  display: flex;
+  margin-bottom: 35px;
+  margin-top: 25px;
+}
+.search-button {
+  border: none;
+  outline: none;
+  background-color: #272727;
+  padding: 5px;
+}
+.search-input {
+  background-color: transparent;
+  height: 100%;
+  width: 100%;
+  padding: 5px;
+  color: white;
+}
+.search-icon {
+  color: white;
+  width: 40px;
+}
+.jobs-list {
+  display: flex;
+  flex-direction: column;
+}
+.jobitem-link {
+  text-decoration: none;
+  color: #f8fafc;
+}
+.job-details {
+  color: white;
+  padding: 15px;
+  border-radius: 15px;
+  background-color: #272727;
+  margin-bottom: 35px;
+}
+.heading-section {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.company-logo {
+  width: 80px;
+  margin-right: 25px;
+}
+.company-title {
+  margin-bottom: 0;
+}
+.rating-card {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-right: 25px;
+}
+.icon {
+  margin: 0 5px 0 5px;
+}
+.star {
+  color: gold;
+}
+.address-section {
+  display: flex;
+  padding: 0 15px 0 15px;
+  border-bottom: 1px solid #b6c5ff;
+}
+.package {
+  margin-left: auto;
+}
+.job-desc {
+  font-size: 16px;
+}
+.job-item-details-body {
+  background-color: black;
+  padding: 50px;
+  height: 100%;
+}
+.desc-header {
+  display: flex;
+  align-items: center;
+}
+.site-link {
+  margin-left: auto;
+}
+.skill-list {
+  margin-top: 15px;
+  list-style-type: none;
+  padding-left: 0;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  padding: 15px;
+}
+.skill-item {
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+  width: 25%;
+  margin-right: 15px;
+  margin-bottom: 15px;
+}
+.skill-image {
+  width: 60px;
+}
+.skill-desc {
+  margin-left: 5px;
+}
+
+.life-at-company-body {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.similar-jobs {
+  color: white;
+}
+.similar-jobs-list {
+  display: flex;
+}
+.similar-job-item {
+  margin: 15px;
+}
+.similar {
+  font-size: 24px;
+  border: none;
+}

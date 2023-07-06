@@ -18,11 +18,13 @@ const Header = props => {
         />
       </Link>
       <ul className="nav-items">
+<Link to="/" className="link-text">
+            
         <li>
-          <Link to="/" className="link-text">
-            Home
-          </Link>
+          Home
+         
         </li>
+ </Link>
         <li>
           <Link to="/jobs" className="link-text">
             Jobs
